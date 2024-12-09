@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "import": "node import.js"
+  },
+  "dependencies": {
+    "get-function-location": "^2.0.0",
+    "multicoin-address-validator": "^0.5.22",
+  }
+}
