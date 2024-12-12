@@ -1,6 +1,7 @@
 package base
 
 type AddressType struct {
-	Prod    []string
-	TestNet []string
+	Prod     []string
+	TestNet  []string
+	StageNet []string
 }

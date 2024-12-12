@@ -4,6 +4,6 @@
   },
   "dependencies": {
     "get-function-location": "^2.0.0",
-    "multicoin-address-validator": "^0.5.22",
+    "multicoin-address-validator": "^0.5.22"
   }
 }
