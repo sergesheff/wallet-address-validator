@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-func NumberToHex(number int, length int) string {
+func NumberToHex(number byte, length int) string {
 
 	h := strconv.FormatInt(int64(number), 16)
 
@@ -20,7 +20,12 @@ func NumberToHex(number int, length int) string {
 		h = "0" + h
 	}
 
-	return strings.Repeat("0", length-len(h)) + h
+	repeatCount := length - len(h)
+	if repeatCount > 0 {
+		h = strings.Repeat("0", repeatCount) + h
+	}
+
+	return h
 }
 
 func byte2hexStr(b byte) string {
@@ -47,11 +52,11 @@ func hexChar2byte(c byte) int {
 	return d
 }
 
-func ToHex(arrOfBytes []int) string {
+func ToHex(arrOfBytes []byte) string {
 	var h string
 
 	for _, value := range arrOfBytes {
-		h += NumberToHex(value, 64)
+		h += NumberToHex(value, -1)
 	}
 	return h
 }
