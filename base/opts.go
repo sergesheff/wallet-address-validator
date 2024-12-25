@@ -1,9 +1,8 @@
 package base
 
-type Currency struct {
-	Name      CurrencyTypes
-	Symbol    string
-	Validator func(string, *Currency, interface{}) (bool, error)
+type Opts struct {
+	// TODO: maybe have sense to move to enum
+	NetworkType *string
 
 	MinLength      *int
 	MaxLength      *int

@@ -1,5 +1,5 @@
 package base
 
 type ICurrency interface {
-	Validate(address string, currencyNameOrSymbol string, opts interface{}) bool
+	IsValidAddress(address string, currency *Currency, opts interface{}) (bool, error)
 }

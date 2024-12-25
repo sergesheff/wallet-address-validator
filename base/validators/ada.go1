@@ -1,0 +1,59 @@
+package validators
+
+import (
+	"encoding/binary"
+	"errors"
+	"github.com/fxamacker/cbor"
+	"github.com/sergesheff/wallet-address-validator/crypto"
+	"hash/crc32"
+	"strconv"
+)
+
+type AdaValidator struct{}
+
+func (AdaValidator) getDecoded(address string) ([]byte, error) {
+	base58 := crypto.Base58(address)
+	var result []byte
+	if err := cbor.Unmarshal(base58, &result); err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (av AdaValidator) isValidAddress1(address string) (bool, error) {
+	decoded, err := av.getDecoded(address)
+	if err != nil {
+		return false, err
+	}
+
+	if len(decoded) != 2 {
+		return false, errors.New("address is invalid")
+	}
+
+	tagged := decoded[0]
+	validCrc := decoded[1]
+
+	parseInt, err := strconv.ParseInt(string(validCrc), 10, 64)
+	if err != nil {
+		return false, err
+	}
+
+	u := binary.BigEndian.Uint32(decoded[1:1])
+
+	checksum := crc32.Checksum(decoded[0:0], nil)
+
+	_ = decoded
+	_ = tagged
+	_ = parseInt
+	return checksum == u, nil
+}
+
+func (av AdaValidator) IsValidAddress(address string, currencyNameOrSymbol string, opts interface{}) (bool, error) {
+	isValid1, err := av.isValidAddress1(address)
+	if err != nil {
+		return false, err
+	}
+
+	return isValid1, nil
+}

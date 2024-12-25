@@ -3,6 +3,7 @@ package validators
 import (
 	"errors"
 	"fmt"
+	"github.com/sergesheff/wallet-address-validator/base"
 	"github.com/sergesheff/wallet-address-validator/crypto"
 	"strings"
 )
@@ -44,7 +45,7 @@ func (TronValidator) decodeBase58Address(address string) ([]byte, error) {
 	return bAddress, nil
 }
 
-func (tv TronValidator) IsValidAddress(address string, currencyNameOrSymbol string, opts interface{}) (bool, error) {
+func (tv TronValidator) IsValidAddress(address string, currency *base.Currency, opts interface{}) (bool, error) {
 	bAddress, err := tv.decodeBase58Address(address)
 	if err != nil {
 		return false, err

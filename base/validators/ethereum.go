@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"github.com/sergesheff/wallet-address-validator/base"
 	"github.com/sergesheff/wallet-address-validator/crypto"
 	"regexp"
 	"strconv"
@@ -9,7 +10,7 @@ import (
 
 type EthereumValidator struct{}
 
-func (rv EthereumValidator) IsValidAddress(address string, currencyNameOrSymbol string, opts interface{}) (bool, error) {
+func (rv EthereumValidator) IsValidAddress(address string, currency *base.Currency, opts interface{}) (bool, error) {
 
 	// Check if it has the basic requirements of an address
 	if !regexp.MustCompile("^0x[0-9a-fA-F]{40}$").MatchString(address) {

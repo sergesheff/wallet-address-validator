@@ -1,6 +1,27 @@
 const getFunctionLocation = require('get-function-location');
 const fs = require('node:fs');
 
+
+
+
+const crypto = require('multicoin-address-validator/src/crypto/utils');
+
+const cr = require('multicoin-address-validator/src/ethereum_validator');
+ 
+
+cr.isValidAddress('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF');
+
+// console.log( crypto.sha256("12345688", 'B64'));
+// console.log( crypto.sha256('12345688', 'B64'));
+
+console.log( crypto.hexStr2byteArray('12345688'));
+console.log( crypto.hexStr2byteArray('12345688'));
+
+return
+
+
+
+
 const packageString = 'package base';
 const currencyTypesFileName = 'base/lst_currency_types.go';
 const currenciesFileName = 'base/lst_currencies.go';
@@ -156,6 +177,7 @@ const {
   chainTypeToValidator,
   getAll,
 } = require('multicoin-address-validator/src/currencies');
+const { log } = require('node:console');
 
 console.log('getting currencies');
 const allCurrencies = getAll();

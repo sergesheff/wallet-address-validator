@@ -3,6 +3,7 @@ package validators
 import (
 	"fmt"
 	"github.com/eknkc/basex"
+	"github.com/sergesheff/wallet-address-validator/base"
 	"github.com/sergesheff/wallet-address-validator/crypto"
 	"regexp"
 )
@@ -13,7 +14,7 @@ func (RippleValidator) getAllowedChars() string {
 	return "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz"
 }
 
-func (rv RippleValidator) IsValidAddress(address string, currencyNameOrSymbol string, opts interface{}) (bool, error) {
+func (rv RippleValidator) IsValidAddress(address string, currency *base.Currency, opts interface{}) (bool, error) {
 
 	rx := regexp.MustCompile(fmt.Sprintf(`^r[%s]{27,35}$`, rv.getAllowedChars()))
 
