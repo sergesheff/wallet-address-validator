@@ -2,11 +2,12 @@ package validators
 
 import (
 	"encoding/hex"
-	"github.com/sergesheff/wallet-address-validator/base"
-	"github.com/sergesheff/wallet-address-validator/crypto"
 	"regexp"
 	"slices"
 	"strings"
+
+	"github.com/sergesheff/wallet-address-validator/base"
+	"github.com/sergesheff/wallet-address-validator/crypto"
 )
 
 type BitcoinValidator struct{}
@@ -119,6 +120,11 @@ func (bv BitcoinValidator) isValidP2PKHandP2SHAddress(address string, currency *
 }
 
 func (bv BitcoinValidator) IsValidAddress(address string, currency *base.Currency, opts *base.Opts) (bool, error) {
-	//TODO implement me
-	panic("implement me")
+
+	if res, err := bv.isValidP2PKHandP2SHAddress(address, currency, opts); err == nil && res {
+		return true, nil
+	}
+
+	sg := crypto.Segwit{}
+	return sg.IsValidAddress(address, currency, opts)
 }

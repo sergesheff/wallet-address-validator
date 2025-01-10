@@ -2,7 +2,10 @@ package crypto
 
 import (
 	"errors"
+	"strings"
+
 	"github.com/btcsuite/btcd/btcutil/bech32"
+	"github.com/sergesheff/wallet-address-validator/base"
 )
 
 type Segwit struct{}
@@ -46,7 +49,7 @@ func (Segwit) convertBits(data []byte, fromBits, toBits uint8, pad bool) []byte 
 	return ret
 }
 
-func (Segwit) decode(addrHrp string, addr string) (*SegwitAddr, error) {
+func (Segwit) Decode(addrHrp string, addr string) (*SegwitAddr, error) {
 	hrp, data, version, err := bech32.DecodeNoLimitWithVersion(addr)
 	if err != nil {
 		return nil, err
@@ -75,5 +78,80 @@ func (Segwit) decode(addrHrp string, addr string) (*SegwitAddr, error) {
 	}
 
 	return &SegwitAddr{Version: data[0], Program: res}, nil
+}
 
+func (s Segwit) Encode(hrp string, version byte, program []byte) (*string, error) {
+
+	var (
+		ret string
+		err error
+	)
+
+	if version > 0 {
+		ret, err = bech32.EncodeM(hrp, s.convertBits(program, 8, 5, true))
+	} else {
+		ret, err = bech32.Encode(hrp, s.convertBits(program, 8, 5, true))
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := s.Decode(hrp, ret); err != nil {
+		return nil, err
+	}
+
+	return &ret, nil
+}
+
+/////////////////////////////////////////////////////
+
+var DefaultNetworkType = "prod"
+
+func (s Segwit) IsValidAddress(address string, currency *base.Currency, opts *base.Opts) (bool, error) {
+
+	if currency.Bech32Hrp == nil {
+		return false, errors.New("Bech32Hrp should be provided")
+	}
+
+	networkType := "prod"
+
+	if opts != nil && opts.NetworkType != nil {
+		networkType = *opts.NetworkType
+	}
+
+	var correctBech32Hrps []string
+
+	if networkType == "prod" || networkType == "testnet" {
+		correctBech32Hrps = currency.Bech32Hrp.GetByName(networkType)
+	} else {
+
+		p := currency.Bech32Hrp.GetByName("prod")
+		if p != nil {
+			correctBech32Hrps = append(correctBech32Hrps, p...)
+		}
+
+		p = currency.Bech32Hrp.GetByName("testnet")
+		if p != nil {
+			correctBech32Hrps = append(correctBech32Hrps, p...)
+		}
+	}
+
+	for _, chrp := range correctBech32Hrps {
+		ret, err := s.Decode(chrp, address)
+		if err != nil && ret != nil {
+			en, err := s.Encode(chrp, ret.Version, ret.Program)
+			if err != nil {
+				return false, err
+			}
+
+			if en == nil {
+				return false, nil
+			}
+
+			return *en == strings.ToLower(address), nil
+		}
+	}
+
+	return false, nil
 }

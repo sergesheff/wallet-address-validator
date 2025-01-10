@@ -3,7 +3,7 @@ package base
 type Currency struct {
 	Name      CurrencyTypes
 	Symbol    string
-	Validator func(string, *Currency, interface{}) (bool, error)
+	Validator func(string, *Currency, *Opts) (bool, error)
 
 	MinLength      *int
 	MaxLength      *int
